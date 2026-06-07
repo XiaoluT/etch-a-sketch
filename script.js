@@ -1,7 +1,50 @@
-const container = document.querySelector("#container")
-const button = document.querySelector("#resizeBtn")
+const container = document.querySelector("#container");
+
+const resizeBtn = document.querySelector("#resizeBtn");
+const blackBtn = document.querySelector("#blackBtn");
+const rainbowBtn = document.querySelector("#rainbowBtn");
+const darkenBtn = document.querySelector("#darkenBtn");
 
 const containerSize = 960;
+
+let currentMode = "black";
+
+function getRandomColor() {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+
+    return `rgb(${r}, ${g}, ${b})`;
+}
+
+function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+}
+
+function paintSquare(square) {
+    if (currentMode === "black") {
+        square.style.backgroundColor = "black";
+        square.style.opacity = "1";
+    }
+
+    else if (currentMode === "rainbow") {
+        square.style.backgroundColor = getRandomColor();
+        square.style.opacity = "1";
+    }
+
+    else if (currentMode === "darken") {
+        let darkness = Number(square.dataset.darkness);
+
+        if (darkness < 100) {
+            darkness += 10;
+        }
+
+        square.dataset.darkness = darkness;
+
+        square.style.backgroundColor = "black";
+        square.style.opacity = darkness / 100;
+    }
+}
 
 function createGrid(size) {
     container.innerHTML = "";
@@ -16,29 +59,44 @@ function createGrid(size) {
         square.style.width = `${squareSize}px`;
         square.style.height = `${squareSize}px`;
 
-        square.addEventListener("mouseover", () => {
-            square.style.backgroundColor = "black";
-        });
-
+        square.dataset.darkness = 0;
         container.appendChild(square);
     }
 }
 
-button.addEventListener("click", () => {
-    let size = prompt("Enter grid size (max 100):");
+container.addEventListener("mouseover", (e) => {
+    if (!e.target.classList.contains("square")) return;
+
+    paintSquare(e.target);
+});
+
+resizeBtn.addEventListener("click", () => {
+    let size = prompt("Enter grid size (1 - 100):");
 
     size = parseInt(size);
 
     if (isNaN(size)) return;
 
-    if (size < 1) size = 1;
-
-    if (size > 100) size = 100;
+    size = clamp(size, 1, 100);
 
     createGrid(size);
-})
+});
+
+blackBtn.addEventListener("click", () => {
+    currentMode = "black";
+});
+
+rainbowBtn.addEventListener("click", () => {
+    currentMode = "rainbow";
+});
+
+darkenBtn.addEventListener("click", () => {
+    currentMode = "darken";
+});
 
 createGrid(16);
+
+
 
 
 
