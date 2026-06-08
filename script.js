@@ -5,6 +5,7 @@ const blackBtn = document.querySelector("#blackBtn");
 const rainbowBtn = document.querySelector("#rainbowBtn");
 const darkenBtn = document.querySelector("#darkenBtn");
 const eraserBtn = document.querySelector("#eraserBtn")
+const clearBtn = document.querySelector("#clearBtn")
 
 const containerSize = 960;
 
@@ -52,6 +53,14 @@ function paintSquare(square) {
 
         square.dataset.darkness = 0;
     }
+}
+
+function clearGrid() {
+    container.querySelectorAll(".square").forEach(square => {
+        square.style.backgroundColor = "";
+        square.style.opacity = "1";
+        square.dataset.darkness = 0;
+    });
 }
 
 function createGrid(size) {
@@ -104,7 +113,9 @@ darkenBtn.addEventListener("click", () => {
 
 eraserBtn.addEventListener("click", () => {
     currentMode = "eraser";
-})
+});
+
+clearBtn.addEventListener("click", clearGrid);
 
 createGrid(16);
 
