@@ -7,6 +7,16 @@ const darkenBtn = document.querySelector("#darkenBtn");
 const eraserBtn = document.querySelector("#eraserBtn")
 const clearBtn = document.querySelector("#clearBtn")
 
+const modeButtons = document.querySelectorAll(".modeBtn")
+
+function setActiveButton(activeButton) {
+    modeButtons.forEach(btn => {
+        btn.classList.remove("active");
+    });
+    activeButton.classList.add("active");
+
+}
+
 const containerSize = 960;
 
 let currentMode = "black";
@@ -101,25 +111,25 @@ resizeBtn.addEventListener("click", () => {
 
 blackBtn.addEventListener("click", () => {
     currentMode = "black";
+    setActiveButton(blackBtn);
 });
 
 rainbowBtn.addEventListener("click", () => {
     currentMode = "rainbow";
+    setActiveButton(rainbowBtn);
 });
 
 darkenBtn.addEventListener("click", () => {
     currentMode = "darken";
+    setActiveButton(darkenBtn);
 });
 
 eraserBtn.addEventListener("click", () => {
     currentMode = "eraser";
+    setActiveButton(eraserBtn);
 });
 
 clearBtn.addEventListener("click", clearGrid);
 
 createGrid(16);
-
-
-
-
-
+setActiveButton(blackBtn)
