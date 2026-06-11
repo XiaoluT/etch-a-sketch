@@ -14,7 +14,6 @@ function setActiveButton(activeButton) {
         btn.classList.remove("active");
     });
     activeButton.classList.add("active");
-
 }
 
 const containerSize = 960;
@@ -91,6 +90,11 @@ function createGrid(size) {
     }
 }
 
+function setMode(mode, button) {
+    currentMode = mode;
+    setActiveButton(button);
+}
+
 container.addEventListener("mouseover", (e) => {
     if (!e.target.classList.contains("square")) return;
 
@@ -110,23 +114,19 @@ resizeBtn.addEventListener("click", () => {
 });
 
 blackBtn.addEventListener("click", () => {
-    currentMode = "black";
-    setActiveButton(blackBtn);
+    setMode("black", blackBtn);
 });
 
 rainbowBtn.addEventListener("click", () => {
-    currentMode = "rainbow";
-    setActiveButton(rainbowBtn);
+    setMode("rainbow", rainbowBtn);
 });
 
 darkenBtn.addEventListener("click", () => {
-    currentMode = "darken";
-    setActiveButton(darkenBtn);
+    setMode("darken", darkenBtn);
 });
 
 eraserBtn.addEventListener("click", () => {
-    currentMode = "eraser";
-    setActiveButton(eraserBtn);
+    setMode("eraser", eraserBtn);
 });
 
 clearBtn.addEventListener("click", clearGrid);
