@@ -104,7 +104,7 @@ container.addEventListener("mouseover", (e) => {
     paintSquare(e.target);
 });
 
-resizeBtn.addEventListener("click", () => {
+function resizeGrid() {
     let size = parseInt(gridSizeInput.value);
 
     if (isNaN(size)) return;
@@ -112,6 +112,14 @@ resizeBtn.addEventListener("click", () => {
     size = clamp(size, 1, 100);
 
     createGrid(size);
+}
+
+resizeBtn.addEventListener("click", resizeGrid);
+
+gridSizeInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        resizeGrid();
+    }
 });
 
 blackBtn.addEventListener("click", () => {
