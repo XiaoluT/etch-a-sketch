@@ -1,6 +1,9 @@
 const container = document.querySelector("#container");
 
 const resizeBtn = document.querySelector("#resizeBtn");
+
+const gridSizeInput = document.querySelector("#gridSizeInput")
+
 const blackBtn = document.querySelector("#blackBtn");
 const rainbowBtn = document.querySelector("#rainbowBtn");
 const darkenBtn = document.querySelector("#darkenBtn");
@@ -102,9 +105,7 @@ container.addEventListener("mouseover", (e) => {
 });
 
 resizeBtn.addEventListener("click", () => {
-    let size = prompt("Enter grid size (1 - 100):");
-
-    size = parseInt(size);
+    let size = parseInt(gridSizeInput.value);
 
     if (isNaN(size)) return;
 
