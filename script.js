@@ -154,7 +154,15 @@ eraserBtn.addEventListener("click", () => {
     setMode("eraser", eraserBtn);
 });
 
-clearBtn.addEventListener("click", clearGrid);
+clearBtn.addEventListener("click", () => {
+    const confirmed = confirm(
+        "Are you sure you want to clear the entire grid?"
+    );
+
+    if (!confirmed) return;
+
+    clearGrid();
+});
 
 createGrid(16);
 setActiveButton(blackBtn)
