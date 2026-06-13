@@ -98,7 +98,23 @@ function setMode(mode, button) {
     setActiveButton(button);
 }
 
+let isDrawing = false;
+
+container.addEventListener("mousedown", (e) => {
+    isDrawing = true;
+
+    if (e.target.classList.contains("square")) {
+        paintSquare(e.target);
+    }
+});
+
+document.addEventListener("mouseup", () => {
+    isDrawing = false;
+});
+
 container.addEventListener("mouseover", (e) => {
+    if (!isDrawing) return;
+
     if (!e.target.classList.contains("square")) return;
 
     paintSquare(e.target);
