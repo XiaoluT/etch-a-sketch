@@ -26,7 +26,19 @@
     </div>
 
     <button id="eraserBtn" class="modeBtn">Eraser</button>
-    <button id="clearBtn"> Clear Grid</button>
+
+    <button id="clearBtn">Clear Grid</button>
+
+    <div id="modalOverlay" class="hidden">
+        <div id="modal">
+            <h3>Clear Grid?</h3>
+            <p>This will remove all colors from the grid.</p>
+            <div class="modal-buttons">
+                <button id="cancelBtn">Cancel</button>
+                <button id="confirmClearBtn">Clear</button>
+            </div>
+        </div>
+    </div>
 
     <div id="container"></div>
 

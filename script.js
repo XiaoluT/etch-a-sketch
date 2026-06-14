@@ -10,6 +10,12 @@ const darkenBtn = document.querySelector("#darkenBtn");
 const eraserBtn = document.querySelector("#eraserBtn")
 const clearBtn = document.querySelector("#clearBtn")
 
+const modalOverlay = document.querySelector("#modalOverlay");
+
+const cancelBtn = document.querySelector("#cancelBtn");
+
+const confirmClearBtn = document.querySelector("#confirmClearBtn");
+
 const modeButtons = document.querySelectorAll(".modeBtn")
 
 function setActiveButton(activeButton) {
@@ -155,14 +161,26 @@ eraserBtn.addEventListener("click", () => {
 });
 
 clearBtn.addEventListener("click", () => {
-    const confirmed = confirm(
-        "Are you sure you want to clear the entire grid?"
-    );
-
-    if (!confirmed) return;
-
-    clearGrid();
+    modalOverlay.classList.remove("hidden");
 });
+
+cancelBtn.addEventListener("click", () => {
+    modalOverlay.classList.add("hidden");
+});
+
+confirmClearBtn.addEventListener("click", () => {
+    clearGrid();
+
+    modalOverlay.classList.add("hidden");
+});
+
+modalOverlay.addEventListener("click", (e) => {
+    if (e.target === modalOverlay) {
+        modalOverlay.classList.add("hidden");
+    }
+});
+
+
 
 createGrid(16);
 setActiveButton(blackBtn)
