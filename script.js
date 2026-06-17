@@ -7,6 +7,15 @@ const gridSizeInput = document.querySelector("#gridSizeInput")
 const blackBtn = document.querySelector("#blackBtn");
 const rainbowBtn = document.querySelector("#rainbowBtn");
 const darkenBtn = document.querySelector("#darkenBtn");
+const colorModeBtn = document.querySelector('[data-mode="color"]');
+
+let currentColor = "black";
+document.querySelector('[data-color = "black"]').classList.add("active");
+
+const colorPalette = document.querySelector("#colorPalette");
+const colorButtons = document.querySelectorAll(".color-btn");
+
+
 const eraserBtn = document.querySelector("#eraserBtn")
 const clearBtn = document.querySelector("#clearBtn")
 
@@ -65,12 +74,20 @@ function paintSquare(square) {
         square.style.opacity = darkness / 100;
     }
 
+    else if (currentMode === "color") {
+        square.style.backgroundColor = currentColor;
+        square.style.opacity = "1";
+
+        square.dataset.darkness = 0;
+    }
+
     else if (currentMode === "eraser") {
         square.style.backgroundColor = "";
         square.style.opacity = "1";
 
         square.dataset.darkness = 0;
     }
+
 }
 
 function clearGrid() {
@@ -102,7 +119,14 @@ function createGrid(size) {
 function setMode(mode, button) {
     currentMode = mode;
     setActiveButton(button);
+
+    if (mode === "color") {
+        colorPalette.classList.remove("hidden");
+    } else {
+        colorPalette.classList.add("hidden");
+    }
 }
+
 
 let isDrawing = false;
 
@@ -156,6 +180,15 @@ darkenBtn.addEventListener("click", () => {
     setMode("darken", darkenBtn);
 });
 
+colorButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        currentColor = btn.dataset.color;
+    });
+});
+
+colorModeBtn.addEventListener("click", () => {
+    setMode("color", colorModeBtn);
+})
 eraserBtn.addEventListener("click", () => {
     setMode("eraser", eraserBtn);
 });
@@ -179,8 +212,6 @@ modalOverlay.addEventListener("click", (e) => {
         modalOverlay.classList.add("hidden");
     }
 });
-
-
 
 createGrid(16);
 setActiveButton(blackBtn)

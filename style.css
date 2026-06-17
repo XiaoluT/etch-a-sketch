@@ -63,3 +63,15 @@ body {
 .hidden {
     display: none !important;
 }
+
+#colorPalette {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.color-btn {
+    padding: 6px 10px;
+    cursor: pointer;
+}
