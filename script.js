@@ -9,8 +9,8 @@ const rainbowBtn = document.querySelector("#rainbowBtn");
 const darkenBtn = document.querySelector("#darkenBtn");
 const colorModeBtn = document.querySelector('[data-mode="color"]');
 
-let currentColor = "black";
-document.querySelector('[data-color = "black"]').classList.add("active");
+let currentColor = "purple";
+document.querySelector('[data-color = "purple"]').classList.add("active");
 
 const colorPalette = document.querySelector("#colorPalette");
 const colorButtons = document.querySelectorAll(".color-btn");
@@ -88,6 +88,14 @@ function paintSquare(square) {
         square.dataset.darkness = 0;
     }
 
+}
+
+function setActiveColor(activeButton) {
+    colorButtons.forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    activeButton.classList.add("active");
 }
 
 function clearGrid() {
@@ -183,6 +191,8 @@ darkenBtn.addEventListener("click", () => {
 colorButtons.forEach(btn => {
     btn.addEventListener("click", () => {
         currentColor = btn.dataset.color;
+
+        setActiveColor(btn);
     });
 });
 
