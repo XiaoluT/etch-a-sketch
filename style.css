@@ -78,4 +78,5 @@ body {
 
 .color-btn.active {
     border: 2px solid black;
+    transform: scale(1.05);
 }
