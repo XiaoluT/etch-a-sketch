@@ -17,7 +17,6 @@ const colorButtons = document.querySelectorAll(".color-btn");
 
 const customColorPicker = document.querySelector("#customColorPicker");
 
-
 const eraserBtn = document.querySelector("#eraserBtn")
 const clearBtn = document.querySelector("#clearBtn")
 
@@ -92,12 +91,16 @@ function paintSquare(square) {
 
 }
 
-function setActiveColor(activeButton) {
+function setActiveColor(activeElement = null) {
     colorButtons.forEach(btn => {
         btn.classList.remove("active");
     });
 
-    activeButton.classList.add("active");
+    customColorPicker.classList.remove("active");
+
+    if (activeElement) {
+        activeElement.classList.add("active");
+    }
 }
 
 function clearGrid() {
@@ -202,13 +205,18 @@ colorButtons.forEach(btn => {
     btn.addEventListener("click", () => {
         currentColor = btn.dataset.color;
 
+        setMode("color", colorModeBtn);
+
         setActiveColor(btn);
     });
 });
 
 customColorPicker.addEventListener("input", () => {
     currentColor = customColorPicker.value;
-    clearActiveColors();
+
+    setMode("color", colorModeBtn);
+
+    setActiveColor(customColorPicker);
 });
 
 eraserBtn.addEventListener("click", () => {
