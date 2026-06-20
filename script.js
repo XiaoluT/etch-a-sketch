@@ -137,6 +137,12 @@ function setMode(mode, button) {
     }
 }
 
+function clearActiveColors() {
+    colorButtons.forEach(btn => {
+        btn.classList.remove("active");
+    });
+}
+
 let isDrawing = false;
 
 container.addEventListener("mousedown", (e) => {
@@ -202,8 +208,7 @@ colorButtons.forEach(btn => {
 
 customColorPicker.addEventListener("input", () => {
     currentColor = customColorPicker.value;
-
-    setActiveColor(btn);
+    clearActiveColors();
 });
 
 eraserBtn.addEventListener("click", () => {
