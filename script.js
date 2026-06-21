@@ -1,247 +1,218 @@
-const container = document.querySelector("#container");
+// State
+const state = {
+    mode: "black",
+    color: "red",
+    isDrawing: false,
+};
 
-const resizeBtn = document.querySelector("#resizeBtn");
 
-const gridSizeInput = document.querySelector("#gridSizeInput")
+// DOM
+const DOM = {
+    container: document.querySelector("#container"),
+    resizeBtn: document.querySelector("#resizeBtn"),
+    gridSizeInput: document.querySelector("#gridSizeInput"),
 
-const blackBtn = document.querySelector("#blackBtn");
-const rainbowBtn = document.querySelector("#rainbowBtn");
-const darkenBtn = document.querySelector("#darkenBtn");
-const colorModeBtn = document.querySelector("#colorModeBtn");
+    blackBtn: document.querySelector("#blackBtn"),
+    rainbowBtn: document.querySelector("#rainbowBtn"),
+    darkenBtn: document.querySelector("#darkenBtn"),
+    colorModeBtn: document.querySelector("#colorModeBtn"),
 
-let currentColor = "red";
-document.querySelector('[data-color = "red"]').classList.add("active");
+    eraserBtn: document.querySelector("#eraserBtn"),
+    clearBtn: document.querySelector("#clearBtn"),
 
-const colorPalette = document.querySelector("#colorPalette");
-const colorButtons = document.querySelectorAll(".color-btn");
+    modalOverlay: document.querySelector("#modalOverlay"),
+    cancelBtn: document.querySelector("#cancelBtn"),
+    confirmClearBtn: document.querySelector("#confirmClearBtn"),
 
-const customColorPicker = document.querySelector("#customColorPicker");
+    colorButtons: document.querySelectorAll(".color-btn"),
+    customColorPicker: document.querySelector("#customColorPicker"),
+    colorPalette: document.querySelector("#colorPalette"),
+};
 
-const eraserBtn = document.querySelector("#eraserBtn")
-const clearBtn = document.querySelector("#clearBtn")
 
-const modalOverlay = document.querySelector("#modalOverlay");
-
-const cancelBtn = document.querySelector("#cancelBtn");
-
-const confirmClearBtn = document.querySelector("#confirmClearBtn");
-
-const modeButtons = document.querySelectorAll(".modeBtn")
-
-function setActiveButton(activeButton) {
-    modeButtons.forEach(btn => {
-        btn.classList.remove("active");
-    });
-    activeButton.classList.add("active");
-}
-
-const containerSize = 960;
-
-let currentMode = "black";
-
-function getRandomColor() {
-    const r = Math.floor(Math.random() * 256);
-    const g = Math.floor(Math.random() * 256);
-    const b = Math.floor(Math.random() * 256);
-
-    return `rgb(${r}, ${g}, ${b})`;
-}
-
+// Utils
 function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
 }
 
-function paintSquare(square) {
-    if (currentMode === "black") {
-        square.style.backgroundColor = "black";
-        square.style.opacity = "1";
-    }
+function getRandomColor() {
+    return `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+}
 
-    else if (currentMode === "rainbow") {
-        square.style.backgroundColor = getRandomColor();
-        square.style.opacity = "1";
-    }
+// Grid
+const GRID = {
+    size: 16,
+    containerSize: 960,
 
-    else if (currentMode === "darken") {
-        let darkness = Number(square.dataset.darkness);
+    create(size) {
+        DOM.container.innerHTML = "";
+        const squareSize = this.containerSize / size;
 
-        if (darkness < 100) {
-            darkness += 10;
+        for (let i = 0; i < size * size; i++) {
+            const square = document.createElement("div");
+            square.classList.add("square");
+
+            square.style.width = `${squareSize}px`;
+            square.style.height = `${squareSize}px`;
+
+            square.dataset.darkness = 0;
+
+            DOM.container.appendChild(square);
         }
+    },
 
-        square.dataset.darkness = darkness;
-
-        square.style.backgroundColor = "black";
-        square.style.opacity = darkness / 100;
+    clear() {
+        DOM.container.querySelectorAll(".square").forEach(square => {
+            square.style.backgroundColor = "";
+            square.style.opacity = "1";
+            square.dataset.darkness = 0;
+        });
     }
+};
 
-    else if (currentMode === "color") {
-        square.style.backgroundColor = currentColor;
-        square.style.opacity = "1";
 
-        square.dataset.darkness = 0;
+// Painter
+const Paineter = {
+    paint(square) {
+        switch (state.mode) {
+            case "black":
+                square.style.backgroundColor = "black";
+                square.style.opacity = 1;
+                break;
+
+            case "rainbow":
+                square.style.backgroundColor = getRandomColor();
+                square.style.opacity = 1;
+                break;
+
+            case "darken":
+                let d = Number(square.dataset.darkness);
+                d = Math.min(d + 10, 100);
+                square.dataset.darkness = d;
+                square.style.backgroundColor = "black";
+                square.style.opacity = d / 100;
+                break;
+
+            case "color":
+                square.style.backgroundColor = state.color;
+                square.style.opacity = 1;
+                square.dataset.darkness = 0;
+                break;
+
+            case "eraser":
+                square.style.backgroundColor = "";
+                square.style.opacity = 1;
+                square.dataset.darkness = 0;
+                break;
+        }
     }
+};
 
-    else if (currentMode === "eraser") {
-        square.style.backgroundColor = "";
-        square.style.opacity = "1";
 
-        square.dataset.darkness = 0;
+// UI
+const UI = {
+    setActiveButton(active) {
+        document.querySelectorAll(".modeBtn").forEach(btn => btn.classList.remove("active"));
+
+        active.classList.add("active");
+    },
+
+    setColorActive(el) {
+        DOM.colorButtons.forEach(btn => btn.classList.remove("active"));
+        DOM.customColorPicker.classList.remove("active");
+
+        if (el) el.classList.add('active');
+    },
+
+    showPalette(show) {
+        DOM.colorPalette.classList.toggle("hidden", !show);
     }
+};
 
-}
 
-function setActiveColor(activeElement = null) {
-    colorButtons.forEach(btn => {
-        btn.classList.remove("active");
-    });
+// Events
+const Events = {
+    init() {
+        // drawing
+        DOM.container.addEventListener("mousedown", e => {
+            state.isDrawing = true;
+            if (e.target.classList.contains("square")) {
+                Paineter.paint(e.target);
+            }
+        });
 
-    customColorPicker.classList.remove("active");
+        document.addEventListener("mouseup", () => {
+            state.isDrawing = false;
+        });
 
-    if (activeElement) {
-        activeElement.classList.add("active");
+        DOM.container.addEventListener("mouseover", e => {
+            if (!state.isDrawing) return;
+            if (!e.target.classList.contains("square")) return;
+
+            Paineter.paint(e.target);
+        });
+
+        // modes
+        DOM.blackBtn.addEventListener("click", () => this.setMode("black", DOM.blackBtn));
+        DOM.rainbowBtn.addEventListener("click", () => this.setMode("rainbow", DOM.rainbowBtn));
+        DOM.darkenBtn.addEventListener("click", () => this.setMode("darken", DOM.darkenBtn));
+        DOM.eraserBtn.addEventListener("click", () => this.setMode("eraser", DOM.eraserBtn));
+
+        // color mode
+        DOM.colorModeBtn.addEventListener("click", () => {
+            this.setMode("color", DOM.colorModeBtn);
+            UI.showPalette(true);
+        });
+
+        DOM.colorButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                state.color = btn.dataset.color;
+                this.setMode("color", DOM.colorModeBtn);
+                UI.setColorActive(btn);
+            })
+        });
+
+        DOM.customColorPicker.addEventListener("input", () => {
+            state.color = DOM.customColorPicker.value;
+            this.setMode("color", DOM.colorModeBtn);
+            UI.setColorActive(DOM.customColorPicker);
+        });
+
+        // grid
+        DOM.resizeBtn.addEventListener("click", () => {
+            let size = parseInt(DOM.gridSizeInput.value);
+
+            if (isNaN(size)) return;
+
+            size = clamp(size, 1, 100);
+
+            GRID.create(size);
+        });
+
+        // clear modal
+        DOM.clearBtn.addEventListener("click", () => DOM.modalOverlay.classList.remove("hidden"));
+        DOM.cancelBtn.addEventListener("click", () => DOM.modalOverlay.classList.add("hidden"));
+
+        DOM.confirmClearBtn.addEventListener("click", () => {
+            GRID.clear();
+            DOM.modalOverlay.classList.add("hidden");
+        });
+
+        DOM.modalOverlay.addEventListener("click", e => {
+            if (e.target === DOM.modalOverlay) {
+                DOM.modalOverlay.classList.add("hidden");
+            }
+        });
+    },
+
+    setMode(mode, btn) {
+        state.mode = mode;
+        UI.setActiveButton(btn);
+        UI.showPalette(mode === "color");
     }
-}
+};
 
-function clearGrid() {
-    container.querySelectorAll(".square").forEach(square => {
-        square.style.backgroundColor = "";
-        square.style.opacity = "1";
-        square.dataset.darkness = 0;
-    });
-}
 
-function createGrid(size) {
-    container.innerHTML = "";
-
-    const squareSize = containerSize / size;
-
-    for (let i = 0; i < size * size; i++) {
-        const square = document.createElement("div");
-
-        square.classList.add("square");
-
-        square.style.width = `${squareSize}px`;
-        square.style.height = `${squareSize}px`;
-
-        square.dataset.darkness = 0;
-        container.appendChild(square);
-    }
-}
-
-function setMode(mode, button) {
-    currentMode = mode;
-    setActiveButton(button);
-
-    if (mode === "color") {
-        colorPalette.classList.remove("hidden");
-    } else {
-        colorPalette.classList.add("hidden");
-    }
-}
-
-function clearActiveColors() {
-    colorButtons.forEach(btn => {
-        btn.classList.remove("active");
-    });
-}
-
-let isDrawing = false;
-
-container.addEventListener("mousedown", (e) => {
-    isDrawing = true;
-
-    if (e.target.classList.contains("square")) {
-        paintSquare(e.target);
-    }
-});
-
-document.addEventListener("mouseup", () => {
-    isDrawing = false;
-});
-
-container.addEventListener("mouseover", (e) => {
-    if (!isDrawing) return;
-
-    if (!e.target.classList.contains("square")) return;
-
-    paintSquare(e.target);
-});
-
-function resizeGrid() {
-    let size = parseInt(gridSizeInput.value);
-
-    if (isNaN(size)) return;
-
-    size = clamp(size, 1, 100);
-
-    createGrid(size);
-}
-
-resizeBtn.addEventListener("click", resizeGrid);
-
-gridSizeInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        resizeGrid();
-    }
-});
-
-blackBtn.addEventListener("click", () => {
-    setMode("black", blackBtn);
-});
-
-rainbowBtn.addEventListener("click", () => {
-    setMode("rainbow", rainbowBtn);
-});
-
-darkenBtn.addEventListener("click", () => {
-    setMode("darken", darkenBtn);
-});
-
-colorModeBtn.addEventListener("click", () => {
-    setMode("color", colorModeBtn);
-})
-colorButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-        currentColor = btn.dataset.color;
-
-        setMode("color", colorModeBtn);
-
-        setActiveColor(btn);
-    });
-});
-
-customColorPicker.addEventListener("input", () => {
-    currentColor = customColorPicker.value;
-
-    setMode("color", colorModeBtn);
-
-    setActiveColor(customColorPicker);
-});
-
-eraserBtn.addEventListener("click", () => {
-    setMode("eraser", eraserBtn);
-});
-
-clearBtn.addEventListener("click", () => {
-    modalOverlay.classList.remove("hidden");
-});
-
-cancelBtn.addEventListener("click", () => {
-    modalOverlay.classList.add("hidden");
-});
-
-confirmClearBtn.addEventListener("click", () => {
-    clearGrid();
-
-    modalOverlay.classList.add("hidden");
-});
-
-modalOverlay.addEventListener("click", (e) => {
-    if (e.target === modalOverlay) {
-        modalOverlay.classList.add("hidden");
-    }
-});
-
-createGrid(16);
-setActiveButton(blackBtn)
+GRID.create(16);
+UI.setActiveButton(DOM.blackBtn)
+Events.init();
