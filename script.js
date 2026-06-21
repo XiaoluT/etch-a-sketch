@@ -27,6 +27,8 @@ const DOM = {
     colorButtons: document.querySelectorAll(".color-btn"),
     customColorPicker: document.querySelector("#customColorPicker"),
     colorPalette: document.querySelector("#colorPalette"),
+
+    saveBtn: document.querySelector("#saveBtn"),
 };
 
 
@@ -38,6 +40,7 @@ function clamp(value, min, max) {
 function getRandomColor() {
     return `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
 }
+
 
 // Grid
 const GRID = {
@@ -72,7 +75,7 @@ const GRID = {
 
 
 // Painter
-const Paineter = {
+const Painter = {
     paint(square) {
         switch (state.mode) {
             case "black":
@@ -129,6 +132,19 @@ const UI = {
     }
 };
 
+const Save = {
+    async saveAsPNG() {
+        const canvas = await html2canvas(DOM.container);
+
+        const link = document.createElement("a");
+
+        link.download = "etch-a-sketch.png";
+        link.href = canvas.toDataURL("image/png");
+
+        link.click();
+    }
+};
+
 
 // Events
 const Events = {
@@ -137,7 +153,7 @@ const Events = {
         DOM.container.addEventListener("mousedown", e => {
             state.isDrawing = true;
             if (e.target.classList.contains("square")) {
-                Paineter.paint(e.target);
+                Painter.paint(e.target);
             }
         });
 
@@ -149,7 +165,7 @@ const Events = {
             if (!state.isDrawing) return;
             if (!e.target.classList.contains("square")) return;
 
-            Paineter.paint(e.target);
+            Painter.paint(e.target);
         });
 
         // modes
@@ -202,6 +218,10 @@ const Events = {
             if (e.target === DOM.modalOverlay) {
                 DOM.modalOverlay.classList.add("hidden");
             }
+        });
+
+        DOM.saveBtn.addEventListener("click", () => {
+            Save.saveAsPNG();
         });
     },
 
