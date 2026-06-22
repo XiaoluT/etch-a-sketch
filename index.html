@@ -9,37 +9,45 @@
 </head>
 
 <body>
-    <div class="control">
-        <label for="gridSizeInput">
-            Grid Size (1-100):
-        </label>
+    <h1>Etch-a-Sketch</h1>
+    <p>Draw by clicking and dragging.</p>
 
-        <input type="number" id="gridSizeInput" min="1" max="100" placeholder="1-100">
+    <div class="toolbar">
+        <div class="control">
+            <label for="gridSizeInput">
+                Grid Size (1-100):
+            </label>
 
-        <button id="resizeBtn">Resize Grid</button>
-    </div>
+            <input type="number" id="gridSizeInput" min="1" max="100" placeholder="1-100">
 
-    <div class="colorModes">
-        <button id="blackBtn" class="modeBtn">Black</button>
-        <button id="rainbowBtn" Class="modeBtn">Rainbow</button>
-        <button id="darkenBtn" class="modeBtn">Darken</button>
-        <button id="colorModeBtn" class="modeBtn" data-mode="color">Color Mode</button>
-
-        <div id="colorPalette" class="hidden">
-            <button class="color-btn" data-color="red">red</button>
-            <button class="color-btn" data-color="yellow">Yellow</button>
-            <button class="color-btn" data-color="blue">Blue</button>
-            <button class="color-btn" data-color="green">Green</button>
-            <button class="color-btn" data-color="purple">Purple</button>
-
-            <input type="color" id="customColorPicker" class="color-picker" value="#000000">
+            <button id="resizeBtn">Resize Grid</button>
         </div>
 
+
+        <div class="colorModes">
+            <button id="blackBtn" class="modeBtn">Black</button>
+            <button id="rainbowBtn" Class="modeBtn">Rainbow</button>
+            <button id="darkenBtn" class="modeBtn">Darken</button>
+            <button id="colorModeBtn" class="modeBtn" data-mode="color">Color Mode</button>
+
+            <div id="colorPalette" class="hidden">
+                <button class="color-btn" data-color="red"></button>
+                <button class="color-btn" data-color="yellow"></button>
+                <button class="color-btn" data-color="blue"></button>
+                <button class="color-btn" data-color="green"></button>
+                <button class="color-btn" data-color="purple"></button>
+
+                <input type="color" id="customColorPicker" class="color-picker" value="#000000">
+            </div>
+
+        </div>
+
+        <button id="eraserBtn" class="modeBtn">Eraser</button>
+
+        <button id="clearBtn">Clear Grid</button>
+
+        <button id="saveBtn">Save PNG</button>
     </div>
-
-    <button id="eraserBtn" class="modeBtn">Eraser</button>
-
-    <button id="clearBtn">Clear Grid</button>
 
     <div id="modalOverlay" class="hidden">
         <div id="modal">
@@ -52,7 +60,8 @@
         </div>
     </div>
 
-    <button id="saveBtn">Save PNG</button>
+
+
 
     <div id="container"></div>
 
