@@ -24,11 +24,18 @@
         </div>
 
 
-        <div class="colorModes">
+        <div class="toolButtons">
             <button id="blackBtn" class="modeBtn">Black</button>
             <button id="rainbowBtn" class="modeBtn">Rainbow</button>
             <button id="darkenBtn" class="modeBtn">Darken</button>
+
+
             <button id="colorModeBtn" class="modeBtn" data-mode="color">Color Mode</button>
+            <button id="eraserBtn" class="modeBtn">Eraser</button>
+
+            <button id="clearBtn">Clear Grid</button>
+
+            <button id="saveBtn">Save PNG</button>
 
             <div id="colorPalette" class="hidden">
                 <button class="color-btn" data-color="red"></button>
@@ -37,16 +44,10 @@
                 <button class="color-btn" data-color="green"></button>
                 <button class="color-btn" data-color="purple"></button>
 
+
                 <input type="color" id="customColorPicker" class="color-picker" value="#000000">
             </div>
-
         </div>
-
-        <button id="eraserBtn" class="modeBtn">Eraser</button>
-
-        <button id="clearBtn">Clear Grid</button>
-
-        <button id="saveBtn">Save PNG</button>
     </div>
 
     <div id="modalOverlay" class="hidden">
@@ -59,9 +60,6 @@
             </div>
         </div>
     </div>
-
-
-
 
     <div id="container"></div>
 
