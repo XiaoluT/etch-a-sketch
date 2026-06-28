@@ -13,53 +13,64 @@
     <p>Draw by clicking and dragging.</p>
 
     <div class="toolbar">
-        <div class="control">
+
+        <!-- Grid Controls -->
+        <div class="toolbar-group">
             <label for="gridSizeInput">
                 Grid Size (1-100):
             </label>
 
             <input type="number" id="gridSizeInput" min="1" max="100" placeholder="1-100">
 
-            <button id="resizeBtn">Resize Grid</button>
+            <button id="resizeBtn" class="btn">Resize Grid</button>
         </div>
 
-
-        <div class="toolButtons">
+        <!-- Drawing Tools -->
+        <div class="toolbar-group">
             <button id="blackBtn" class="modeBtn">Black</button>
             <button id="rainbowBtn" class="modeBtn">Rainbow</button>
             <button id="darkenBtn" class="modeBtn">Darken</button>
 
 
             <button id="colorModeBtn" class="modeBtn" data-mode="color">Color Mode</button>
-            <button id="eraserBtn" class="modeBtn">Eraser</button>
 
-            <button id="clearBtn">Clear Grid</button>
-
-            <button id="saveBtn">Save PNG</button>
-
-            <div id="colorPalette" class="hidden">
+            <!-- Color Palette(grouped) -->
+            <div id="colorPalette" class="hidden palatte">
                 <button class="color-btn" data-color="red"></button>
                 <button class="color-btn" data-color="yellow"></button>
                 <button class="color-btn" data-color="blue"></button>
                 <button class="color-btn" data-color="green"></button>
                 <button class="color-btn" data-color="purple"></button>
 
-
                 <input type="color" id="customColorPicker" class="color-picker" value="#000000">
             </div>
+
+            <button id="eraserBtn" class="modeBtn">Eraser</button>
         </div>
+
+        <!-- Utilities -->
+        <div class="toolbar-group">
+            <button id="clearBtn" class="btn danger">Clear Grid</button>
+            <button id="saveBtn" class="btn success">Save PNG</button>
+        </div>
+
     </div>
 
-    <div id="modalOverlay" class="hidden">
-        <div id="modal">
+    <!-- Modal -->
+
+    <div id="modalOverlay" class="hidden modal-overlay">
+        <div id="modal" class="modal">
             <h3>Clear Grid?</h3>
             <p>This will remove all colors from the grid.</p>
+
             <div class="modal-buttons">
-                <button id="cancelBtn">Cancel</button>
-                <button id="confirmClearBtn">Clear</button>
+                <button id="cancelBtn" class="btn">Cancel</button>
+                <button id="confirmClearBtn" class="btn danger">Clear</button>
             </div>
         </div>
     </div>
+
+    <!-- Grid -->
 
     <div id="container"></div>
 
