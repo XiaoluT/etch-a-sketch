@@ -9,7 +9,7 @@ const state = {
 // DOM
 const DOM = {
     container: document.querySelector("#container"),
-    resizeBtn: document.querySelector("#resizeBtn"),
+    resizeForm: document.querySelector("#resizeForm"),
     gridSizeInput: document.querySelector("#gridSizeInput"),
 
     blackBtn: document.querySelector("#blackBtn"),
@@ -175,6 +175,12 @@ const Events = {
             Painter.paint(e.target);
         });
 
+        // Grid
+        DOM.resizeForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            this.resizeGrid();
+        });
+
         // modes
         DOM.blackBtn.addEventListener("click", () => this.setMode("black", DOM.blackBtn));
         DOM.rainbowBtn.addEventListener("click", () => this.setMode("rainbow", DOM.rainbowBtn));
@@ -201,17 +207,6 @@ const Events = {
             UI.setColorActive(DOM.customColorPicker);
         });
 
-        // grid
-        DOM.resizeBtn.addEventListener("click", () => {
-            let size = parseInt(DOM.gridSizeInput.value);
-
-            if (isNaN(size)) return;
-
-            size = clamp(size, 1, 100);
-
-            GRID.create(size);
-        });
-
         // clear modal
         DOM.clearBtn.addEventListener("click", () => DOM.modalOverlay.classList.remove("hidden"));
         DOM.cancelBtn.addEventListener("click", () => DOM.modalOverlay.classList.add("hidden"));
@@ -230,6 +225,16 @@ const Events = {
         DOM.saveBtn.addEventListener("click", () => {
             Save.saveAsPNG();
         });
+    },
+
+    resizeGrid() {
+        let size = parseInt(DOM.gridSizeInput.value);
+
+        if (isNaN(size)) return;
+
+        size = clamp(size, 1, 100);
+
+        GRID.create(size);
     },
 
     setMode(mode, btn) {
