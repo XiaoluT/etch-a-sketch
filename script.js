@@ -129,6 +129,13 @@ const UI = {
 
     showPalette(show) {
         DOM.colorPalette.classList.toggle("hidden", !show);
+    },
+
+    initSelectedColor() {
+        const selectedBtn = document.querySelector(`.color-btn[data-color="${state.color}"]`);
+
+        this.setColorActive(selectedBtn);
+
     }
 };
 
@@ -234,5 +241,6 @@ const Events = {
 
 
 GRID.create(16);
-UI.setActiveButton(DOM.blackBtn)
+UI.setActiveButton(DOM.blackBtn);
+UI.initSelectedColor();
 Events.init();
