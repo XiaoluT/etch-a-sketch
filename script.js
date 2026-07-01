@@ -3,6 +3,9 @@ const state = {
     mode: "black",
     color: "red",
     isDrawing: false,
+
+    history: [],
+    currentStroke: []
 };
 
 
@@ -29,6 +32,8 @@ const DOM = {
     colorPalette: document.querySelector("#colorPalette"),
 
     saveBtn: document.querySelector("#saveBtn"),
+
+    undoBtn: document.querySelector("#undoBtn")
 };
 
 
@@ -73,10 +78,51 @@ const GRID = {
     }
 };
 
+// History
+
+const History = {
+    record(square) {
+        const alreadyRecorded = state.currentStroke.some(item => item.square === square);
+
+        if (alreadyRecorded) return;
+
+        state.currentStroke.push({
+            square,
+            backgroundColor: square.style.backgroundColor,
+            opacity: square.style.opacity,
+            darkness: square.dataset.darkness
+        });
+    },
+
+    finishStroke() {
+        if (state.currentStroke.length > 0) {
+            state.history.push(state.currentStroke);
+        }
+        state.currentStroke = [];
+    },
+
+    undo() {
+        const stroke = state.history.pop();
+        if (!stroke) return;
+
+        stroke.forEach(item => {
+            item.square.style.backgroundColor = item.backgroundColor;
+            item.square.style.opacity = item.opacity;
+            item.square.dataset.darkness = item.darkness;
+        });
+    },
+
+    clear() {
+        state.history = [];
+        state.currentStroke = [];
+    }
+};
+
 
 // Painter
 const Painter = {
     paint(square) {
+        History.record(square);
         switch (state.mode) {
             case "black":
                 square.style.backgroundColor = "black";
@@ -158,6 +204,7 @@ const Events = {
     init() {
         // drawing
         DOM.container.addEventListener("mousedown", e => {
+            state.currentStroke = [];
             state.isDrawing = true;
             if (e.target.classList.contains("square")) {
                 Painter.paint(e.target);
@@ -166,6 +213,7 @@ const Events = {
 
         document.addEventListener("mouseup", () => {
             state.isDrawing = false;
+            History.finishStroke();
         });
 
         DOM.container.addEventListener("mouseover", e => {
@@ -173,12 +221,6 @@ const Events = {
             if (!e.target.classList.contains("square")) return;
 
             Painter.paint(e.target);
-        });
-
-        // Grid
-        DOM.resizeForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            this.resizeGrid();
         });
 
         // modes
@@ -207,12 +249,19 @@ const Events = {
             UI.setColorActive(DOM.customColorPicker);
         });
 
+        // Grid
+        DOM.resizeForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            this.resizeGrid();
+        });
+
         // clear modal
         DOM.clearBtn.addEventListener("click", () => DOM.modalOverlay.classList.remove("hidden"));
         DOM.cancelBtn.addEventListener("click", () => DOM.modalOverlay.classList.add("hidden"));
 
         DOM.confirmClearBtn.addEventListener("click", () => {
             GRID.clear();
+            History.clear();
             DOM.modalOverlay.classList.add("hidden");
         });
 
@@ -222,6 +271,10 @@ const Events = {
             }
         });
 
+        DOM.undoBtn.addEventListener("click", () => {
+            History.undo();
+        })
+
         DOM.saveBtn.addEventListener("click", () => {
             Save.saveAsPNG();
         });
@@ -229,12 +282,13 @@ const Events = {
 
     resizeGrid() {
         let size = parseInt(DOM.gridSizeInput.value);
-
         if (isNaN(size)) return;
-
         size = clamp(size, 1, 100);
-
         GRID.create(size);
+
+        History.clear();
+
+
     },
 
     setMode(mode, btn) {

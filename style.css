@@ -123,6 +123,15 @@ button:active {
     background: var(--success-hover);
 }
 
+#undoBtn {
+    background: #f59e0b;
+    color: white;
+}
+
+#undoBtn:hover {
+    background: #d97706;
+}
+
 /* Active Mode */
 .modeBtn.active {
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
